@@ -14,47 +14,47 @@ class RegisterView(APIView):
     
 class LoginView(APIView):
     def post(self, request):
-        username = request.data['username']
-        password = request.data['password']
+        try:
+            username = request.data['username']
+            password = request.data['password']
+        except KeyError:
+            return Response({'detail': 'Invalid request. Missing username or password.'}, status=400)
+
         user = CustomUser.objects.filter(username=username).first()
-        
+
         if user is None:
             raise AuthenticationFailed('User not found!')
-        
+
         if not user.check_password(password):
             raise AuthenticationFailed('Incorrect password!')
-        
+
         payload = {
             'id': user.id,
             'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-            'iat':datetime.datetime.utcnow()
+            'iat': datetime.datetime.utcnow()
         }
 
         token = jwt.encode(payload, 'secret', algorithm='HS256')
 
-        response = Response()
-        
-        response.set_cookie(key='jwt', value=token, httponly=True)
-      
-      
-        response.data={
-            'message' : 'success!',
-            'jwt' : token  
+        response = Response({
+            'message': 'success!',
+            'jwt': token
+        })
 
-            }
-        return response 
+        response.set_cookie(key='jwt', value=token, httponly=True)
+        return response
     
 class UserView(APIView):
     def get(self, request):
         token = request.COOKIES.get('jwt')
         if not token:
-            raise AuthenticationFailed('Unauthenticated!')
+            raise AuthenticationFailed('Unauthenticated!',)
         
         try:
             payload = jwt.decode(token, 'secret', algorithms=['HS256'])
 
         except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated!')
+            raise AuthenticationFailed('Unauthenticated!',)
         
         user= CustomUser.objects.filter(id=payload['id']).first()
         serializer = UserSerializer(user)

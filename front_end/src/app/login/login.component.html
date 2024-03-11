@@ -1,19 +1,19 @@
+
 <form (ngSubmit)="onSubmit()">
-    <div class="example-container">
-        <mat-form-field>
-            <mat-label>Enter your username</mat-label>
-            <input matInput placeholder="user123" [formControl]="username" required>
-            @if (username.invalid) {
-                <mat-error>{{getErrorMessage()}}</mat-error>
-            }
-        </mat-form-field>
-        <mat-form-field>
-            <mat-label>Enter your password</mat-label>
-            <input matInput [type]="hide ? 'password' : 'text'" [formControl]="password">
-            <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
-                <mat-icon>{{ hide ? 'visibility_off' : 'visibility' }}</mat-icon>
-            </button>
-        </mat-form-field>
+    <div class="container">
+        <div class="pic2"></div>
+        <img src="assets/tritux-logo-site-2.png" alt="">
+        <h1>Welcome! Please Log In</h1>
+        <div class="inp">
+            <input matInput [formControl]="username" name="username" required>
+            <label for="Username">Username</label>
+        </div>
+        <div class="inp">
+            <input matInput [type]="hide ? 'password' : 'text'" [formControl]="password" name="password" required>
+            <label for="Password">Password</label>
+        </div>
+        <div style="display: flex;"><a href="">Forgot Password? - Support</a></div>
         <button type="submit">Login</button>
     </div>
+    <div class="pic"></div>
 </form>

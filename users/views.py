@@ -4,7 +4,8 @@ from rest_framework.exceptions import AuthenticationFailed
 from .serializers import UserSerializer
 from .models import CustomUser
 import jwt, datetime
-# Create your views here.
+from django.core.exceptions import ObjectDoesNotExist
+# Create your views here
 class RegisterView(APIView):
     def post(self, request):
         serializer=UserSerializer(data=request.data)
@@ -43,26 +44,6 @@ class LoginView(APIView):
 
         response.set_cookie(key='jwt', value=token, httponly=True)
         return response
-    
-class UserView(APIView):
-    def get(self, request):
-        token = request.COOKIES.get('jwt')
-        if not token:
-            raise AuthenticationFailed('Unauthenticated!',)
-        
-        try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated!',)
-        
-        user= CustomUser.objects.filter(id=payload['id']).first()
-        serializer = UserSerializer(user)
-
-
-        return Response(serializer.data)
-    
-
 class LogoutView(APIView):
     def post(self, request):
         response=Response()
@@ -72,5 +53,60 @@ class LogoutView(APIView):
 
         }
         return response
+    
+class UserView(APIView):
+    def get(self, request):
+        token = request.COOKIES.get('jwt')
 
+        if not token:
+            return Response({'detail': 'Authentication credentials were not provided.'}, status=401)
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+            users = CustomUser.objects.all()  
+            serializer = UserSerializer(users, many=True)
+            return Response(serializer.data)       
+        except jwt.ExpiredSignatureError:
+            return Response({'detail': 'Authentication credentials have expired.'}, status=401)
+        except jwt.InvalidTokenError:
+            return Response({'detail': 'Invalid authentication token.'}, status=401)
+    
+class DeleteUserView(APIView):
+    def delete(self, request):
+        token = request.COOKIES.get('jwt')
+
+        if not token:
+            return Response({'detail': 'Authentication credentials were not provided.'}, status=401)
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+            user_id = request.data.get('id')
+            user = CustomUser.objects.get(id=user_id)
+            user.delete()
+            return Response({'message': 'User deleted successfully'}, status=204)
+        except ObjectDoesNotExist:
+            return Response({'message': 'User not found'}, status=404)
+        except jwt.ExpiredSignatureError:
+            return Response({'detail': 'Authentication credentials have expired.'}, status=401)
+        except jwt.InvalidTokenError:
+            return Response({'detail': 'Invalid authentication token.'}, status=401)
+        
+class ModifyUserView(APIView):
+    def put(self,request):
+        token = request.COOKIES.get('jwt')
+        if not token:
+            return Response({'detail': 'Authentication credentials were not provided.'}, status=401)
+
+        try:
+            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+            user_id = request.data.get('id')
+
+
+
+        except ObjectDoesNotExist:
+            return Response({'message': 'User not found'}, status=404)
+        except jwt.ExpiredSignatureError:
+            return Response({'detail': 'Authentication credentials have expired.'}, status=401)
+        except jwt.InvalidTokenError:
+            return Response({'detail': 'Invalid authentication token.'}, status=401)
 

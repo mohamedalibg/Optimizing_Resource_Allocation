@@ -48,6 +48,9 @@ INSTALLED_APPS = [
     
     
     'users',
+    'resource',
+    'project',
+    'client'
 
 ]
 
@@ -136,6 +139,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# settings.py
+JWT_SECRET_KEY = 'Po8tZKb2v_Lhkd72lYJsZR_S_LGeORf0eTHsEO-jn0wC4Y_3b_s-3ocP74X0qxUMnEo'  # Replace with your generated key
 
 
 AUTH_USER_MODEL = 'users.CustomUser'

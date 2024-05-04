@@ -1,65 +1,38 @@
 import { Component } from '@angular/core';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatIconModule } from '@angular/material/icon';
-import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';  // Import reactive forms modules
-import { LoginService } from '../services/login.service';
-import { HttpClientModule } from '@angular/common/http';
-import { CommonModule } from '@angular/common';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  standalone: true,
-  imports: [
-    CommonModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    MatIconModule,
-    HttpClientModule,
-  ],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent {
-  router: any;
-  constructor(private loginService: LoginService) {}
+  loginForm: FormGroup;
 
-  username = new FormControl('', [Validators.required]);
-  password = new FormControl('', [Validators.required]); 
-
-  getErrorMessage() {
-    if (this.username.hasError('required')) {
-      return 'You must enter a value';
-    } else {
-      return '';
-    }
+  constructor(
+    private fb: FormBuilder,
+    private http: HttpClient,
+    private router: Router
+  ) {
+    this.loginForm = this.fb.group({
+      username: ['', Validators.required],
+      password: ['', Validators.required]
+    });
   }
-
-  hide = true;
 
   onSubmit(): void {
-    const usernameValue = this.username.value;
-    const passwordValue = this.password.value;
-
-    if (usernameValue !== null && passwordValue !== null) {
-      this.loginService.login(usernameValue, passwordValue).subscribe({
-        next: (response) => {
-          console.log(response);  // Handle successful login response
-
-          // Assuming your server returns a token or other data indicating a successful login
-          // Redirect the user to the HomeComponent after a successful login
-          this.router.navigate(['/user']);
+    if (this.loginForm.valid) {
+      this.http.post<any>('http://localhost:8000/login/', this.loginForm.value).subscribe({
+        next: (res) => {
+          console.log('Login successful');
+          this.router.navigate(['/home']); // Navigate to the home route after login
         },
-        error: (error) => {
-          console.error(error);  // Handle login error
+        error: (err) => {
+          console.error('Login failed:', err);
         }
       });
-    } else {
-      console.error('Username or password is null.');
-    } 
+    }
   }
-} 
+}

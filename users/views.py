@@ -1,112 +1,94 @@
-from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.exceptions import AuthenticationFailed
 from .serializers import UserSerializer
 from .models import CustomUser
-import jwt, datetime
-from django.core.exceptions import ObjectDoesNotExist
-# Create your views here
+from .utils import generate_token, Response
+from .authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import status
+
 class RegisterView(APIView):
     def post(self, request):
-        serializer=UserSerializer(data=request.data)
+        serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
     
 class LoginView(APIView):
     def post(self, request):
-        try:
-            username = request.data['username']
-            password = request.data['password']
-        except KeyError:
-            return Response({'detail': 'Invalid request. Missing username or password.'}, status=400)
+        username = request.data.get('username')
+        password = request.data.get('password')
+        if not username or not password:
+            return Response({'detail': 'Username or password not provided.'}, status=400)
 
         user = CustomUser.objects.filter(username=username).first()
-
         if user is None:
             raise AuthenticationFailed('User not found!')
-
         if not user.check_password(password):
             raise AuthenticationFailed('Incorrect password!')
 
-        payload = {
-            'id': user.id,
-            'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=60),
-            'iat': datetime.datetime.utcnow()
-        }
-
-        token = jwt.encode(payload, 'secret', algorithm='HS256')
-
+        token = generate_token(user)
         response = Response({
             'message': 'success!',
-            'jwt': token
+            'jwt': token,
+            'user_type': 'admin' if user.is_superuser else 'manager'
         })
-
-        response.set_cookie(key='jwt', value=token, httponly=True)
+        response.set_cookie(key='jwt', value=token, httponly=True, secure=True, samesite='Lax')
         return response
+
 class LogoutView(APIView):
     def post(self, request):
-        response=Response()
+        response = Response({'message': 'Logged out successfully'})
         response.delete_cookie('jwt')
-        response.data={
-            'message':'success'
-
-        }
         return response
-    
+
 class UserView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
-        token = request.COOKIES.get('jwt')
+        users = CustomUser.objects.all()
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
 
-        if not token:
-            return Response({'detail': 'Authentication credentials were not provided.'}, status=401)
-
-        try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-            users = CustomUser.objects.all()  
-            serializer = UserSerializer(users, many=True)
-            return Response(serializer.data)       
-        except jwt.ExpiredSignatureError:
-            return Response({'detail': 'Authentication credentials have expired.'}, status=401)
-        except jwt.InvalidTokenError:
-            return Response({'detail': 'Invalid authentication token.'}, status=401)
-    
 class DeleteUserView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def delete(self, request):
-        token = request.COOKIES.get('jwt')
-
-        if not token:
-            return Response({'detail': 'Authentication credentials were not provided.'}, status=401)
-
+        user_id = request.data.get('id')
         try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-            user_id = request.data.get('id')
             user = CustomUser.objects.get(id=user_id)
             user.delete()
             return Response({'message': 'User deleted successfully'}, status=204)
-        except ObjectDoesNotExist:
+        except CustomUser.DoesNotExist:
             return Response({'message': 'User not found'}, status=404)
-        except jwt.ExpiredSignatureError:
-            return Response({'detail': 'Authentication credentials have expired.'}, status=401)
-        except jwt.InvalidTokenError:
-            return Response({'detail': 'Invalid authentication token.'}, status=401)
-        
-class ModifyUserView(APIView):
-    def put(self,request):
-        token = request.COOKIES.get('jwt')
-        if not token:
-            return Response({'detail': 'Authentication credentials were not provided.'}, status=401)
 
+class SingleUserView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, user_id):
         try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-            user_id = request.data.get('id')
-
-
-
-        except ObjectDoesNotExist:
+            user = CustomUser.objects.get(id=user_id)
+            serializer = UserSerializer(user)
+            return Response({'user': serializer.data})
+        except CustomUser.DoesNotExist:
             return Response({'message': 'User not found'}, status=404)
-        except jwt.ExpiredSignatureError:
-            return Response({'detail': 'Authentication credentials have expired.'}, status=401)
-        except jwt.InvalidTokenError:
-            return Response({'detail': 'Invalid authentication token.'}, status=401)
+
+class ModifyUserView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def put(self, request, user_id):
+        try:
+            user = CustomUser.objects.get(id=user_id)
+        except CustomUser.DoesNotExist:
+            return Response({'message': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = UserSerializer(user, data=request.data, partial=True)  # Allow partial updates
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 

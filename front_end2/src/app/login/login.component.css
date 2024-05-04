@@ -11,7 +11,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #24242c;
+  background-color: #2e2e85;
   overflow: hidden;
 }
 
@@ -142,10 +142,10 @@ button:hover {
 h1 {
   font-family: 'Be Vietnam Pro', sans-serif;
   font-family: 'Figtree', sans-serif;
-  color: #fff;
+  color: #9d9da4;
   margin-bottom: 20px;
   width: 100%; /* Adjusted the width to 100% */
-  max-width: 350px;
+  max-width: 500px;
   text-align: center; /* Center the text horizontally */
 }
 

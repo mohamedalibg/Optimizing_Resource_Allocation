@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_filters',
     
     'rest_framework',
     'rest_framework.authtoken',
@@ -50,7 +51,8 @@ INSTALLED_APPS = [
     'users',
     'resource',
     'project',
-    'client'
+    'client',
+    'dashboard'
 
 ]
 

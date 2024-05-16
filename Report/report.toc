@@ -1,0 +1,23 @@
+\contentsline {chapter}{APPROVAL}{i}{}%
+\contentsline {chapter}{DECLARATION}{ii}{}%
+\contentsline {chapter}{ABSTRACT}{iii}{}%
+\contentsline {chapter}{ACKNOWLEDGEMENTS}{iv}{}%
+\contentsline {chapter}{LIST OF TABLES}{vi}{}%
+\contentsline {chapter}{LIST OF FIGURES}{vii}{}%
+\contentsline {chapter}{\numberline {1} General Context}{1}{}%
+\contentsline {section}{\numberline {1.1}Introduction}{1}{}%
+\contentsline {section}{\numberline {1.2}Host Company Presentation}{1}{}%
+\contentsline {subsection}{\numberline {1.2.1}Company Description}{1}{}%
+\contentsline {subsection}{\numberline {1.2.2}Mission, Vision and Positionning}{1}{}%
+\contentsline {subsection}{\numberline {1.2.3}Products and Services}{1}{}%
+\contentsline {section}{\numberline {1.3}Internship Description}{2}{}%
+\contentsline {subsection}{\numberline {1.3.1}Internship Context}{2}{}%
+\contentsline {subsection}{\numberline {1.3.2}Learning Outcomes}{2}{}%
+\contentsline {section}{\numberline {1.4}Project Overview}{2}{}%
+\contentsline {subsection}{\numberline {1.4.1}Problem Statement}{2}{}%
+\contentsline {subsection}{\numberline {1.4.2}Existing Solutions Study}{3}{}%
+\contentsline {subsubsection}{Solution Implemented By The Company}{3}{}%
+\contentsline {subsubsection}{Limitations of the Existing Solution}{3}{}%
+\contentsline {section}{\numberline {1.5}Methodology}{4}{}%
+\contentsline {section}{\numberline {1.6}Conclusion}{4}{}%
+\contentsline {chapter}{\numberline {2}Litterature Review}{5}{}%

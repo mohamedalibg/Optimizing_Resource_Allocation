@@ -8,7 +8,7 @@ urlpatterns = [
     path('users/', UserView.as_view()),
     path('<int:user_id>/userView/', SingleUserView.as_view()),
     path('logout/', LogoutView.as_view()),
-    path('delete/', DeleteUserView.as_view()),
+    path('<int:id>/delete/', DeleteUserView.as_view()),
     path('<int:user_id>/modify/', ModifyUserView.as_view())
 
 

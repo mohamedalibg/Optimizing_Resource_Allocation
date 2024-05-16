@@ -4,15 +4,21 @@ from .serializers import UserSerializer
 from .models import CustomUser
 from .utils import generate_token, Response
 from .authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from rest_framework import status
+from rest_framework.parsers import MultiPartParser, FormParser
 
 class RegisterView(APIView):
+    authentication_classes = [JWTAuthentication]
+    permission_classes = [IsAuthenticated, IsAdminUser]
+    parser_classes = (MultiPartParser, FormParser)  # Add parsers to handle FormData
+
     def post(self, request):
         serializer = UserSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response(serializer.data)
+
     
 class LoginView(APIView):
     def post(self, request):
@@ -44,7 +50,7 @@ class LogoutView(APIView):
 
 class UserView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated , IsAdminUser]
 
     def get(self, request):
         users = CustomUser.objects.all()
@@ -53,12 +59,12 @@ class UserView(APIView):
 
 class DeleteUserView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAdminUser]
 
-    def delete(self, request):
-        user_id = request.data.get('id')
+    def delete(self, request, id):
+        
         try:
-            user = CustomUser.objects.get(id=user_id)
+            user = CustomUser.objects.get(id=id)
             user.delete()
             return Response({'message': 'User deleted successfully'}, status=204)
         except CustomUser.DoesNotExist:
@@ -66,7 +72,7 @@ class DeleteUserView(APIView):
 
 class SingleUserView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAdminUser]
 
     def get(self, request, user_id):
         try:
@@ -78,7 +84,7 @@ class SingleUserView(APIView):
 
 class ModifyUserView(APIView):
     authentication_classes = [JWTAuthentication]
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAdminUser]
 
     def put(self, request, user_id):
         try:

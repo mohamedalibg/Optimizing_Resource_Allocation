@@ -1,0 +1,186 @@
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+      <app-aside-admin></app-aside-admin>
+      <div class="layout-page">
+        <app-navbar></app-navbar>
+        <div class="content-wrapper">
+          <div class="content-wrapper">
+            <div class="container-xxl flex-grow-1 container-p-y">
+              <h4 class="py-3 mb-4">
+                <span class="text-muted fw-light">Users</span>
+              </h4>
+              <div class="d-flex justify-content-end mb-4">
+                <button class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#add-new-record">
+                  Add User
+                </button>
+              </div>
+              <div class="card">
+                <div class="card-datatable table-responsive">
+                  <table class="datatables-basic table border-top">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Profile Picture</th>
+                        <th>Username</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Date Joined</th>
+                        <th>Status</th>
+                        <th>Action</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr *ngFor="let user of users">
+                        <td>{{ user.id }}</td>
+                        <td>
+                          <img [src]="user.profile_picture"width="50" height="50">
+                        </td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.first_name }}</td>
+                        <td>{{ user.last_name }}</td>
+                        <td>{{ user.email }}</td>
+                        <td>{{ user.date_joined }}</td>
+                        <td>{{ user.is_active }}</td>
+                        <td>
+                          <button class="btn btn-primary btn-sm">Edit</button>
+                          <button class="btn btn-danger btn-sm" (click)="deleteUser(user.id)">Delete</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+              <div class="offcanvas offcanvas-end" id="add-new-record">
+                <div class="offcanvas-header border-bottom">
+                  <h5 class="offcanvas-title" id="exampleModalLabel">New User</h5>
+                  <button
+                    type="button"
+                    class="btn-close text-reset"
+                    data-bs-dismiss="offcanvas"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div class="offcanvas-body flex-grow-1">
+                  <form class="add-new-record pt-0 row g-2" id="form-add-new-record" (ngSubmit)="addNewRecord()">
+                    <div class="col-sm-12">
+                      <label class="form-label" for="basicUsername">Username</label>
+                      <div class="input-group input-group-merge">
+                        <span id="basicUsername2" class="input-group-text">
+                          <i class="bx bx-user"></i>
+                        </span>
+                        <input
+                          type="text"
+                          id="basicUsername"
+                          class="form-control dt-username"
+                          name="basicUsername"
+                          placeholder="johndoe"
+                          aria-label="johndoe"
+                          aria-describedby="basicUsername2"
+                          [(ngModel)]="newUser.username"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <label class="form-label" for="basicPassword">Password</label>
+                      <div class="input-group input-group-merge">
+                        <span id="basicPassword2" class="input-group-text">
+                          <i class="bx bx-lock"></i>
+                        </span>
+                        <input
+                          type="password"
+                          id="basicPassword"
+                          class="form-control dt-password"
+                          name="basicPassword"
+                          placeholder="Password"
+                          aria-label="Password"
+                          aria-describedby="basicPassword2"
+                          [(ngModel)]="newUser.password"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <label class="form-label" for="basicFirstName">First Name</label>
+                      <div class="input-group input-group-merge">
+                        <span id="basicFirstName2" class="input-group-text">
+                          <i class="bx bx-user"></i>
+                        </span>
+                        <input
+                          type="text"
+                          id="basicFirstName"
+                          class="form-control dt-first-name"
+                          name="basicFirstName"
+                          placeholder="John"
+                          aria-label="John"
+                          aria-describedby="basicFirstName2"
+                          [(ngModel)]="newUser.first_name"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <label class="form-label" for="basicLastName">Last Name</label>
+                      <div class="input-group input-group-merge">
+                        <span id="basicLastName2" class="input-group-text">
+                          <i class="bx bx-user"></i>
+                        </span>
+                        <input
+                          type="text"
+                          id="basicLastName"
+                          class="form-control dt-last-name"
+                          name="basicLastName"
+                          placeholder="Doe"
+                          aria-label="Doe"
+                          aria-describedby="basicLastName2"
+                          [(ngModel)]="newUser.last_name"
+                          required
+                        />
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <label class="form-label" for="basicEmail">Email</label>
+                      <div class="input-group input-group-merge">
+                        <span class="input-group-text">
+                          <i class="bx bx-envelope"></i>
+                        </span>
+                        <input
+                          type="email"
+                          id="basicEmail"
+                          name="basicEmail"
+                          class="form-control dt-email"
+                          placeholder="john.doe@example.com"
+                          aria-label="john.doe@example.com"
+                          [(ngModel)]="newUser.email"
+                          required
+                        />
+                      </div>
+                      <div class="form-text">You can use letters, numbers & periods</div>
+                    </div>
+                    <div class="col-sm-12">
+                      <label class="form-label" for="basicProfilePic">Profile Picture</label>
+                      <div class="input-group input-group-merge">
+                        <input
+                          type="file"
+                          id="basicProfilePic"
+                          name="basicProfilePic"
+                          class="form-control"
+                          (change)="handleFileInput($event)"
+                        />
+                      </div>
+                    </div>
+                    <div class="col-sm-12">
+                      <button type="submit" class="btn btn-primary data-submit me-sm-3 me-1">Submit</button>
+                      <button type="reset" class="btn btn-outline-secondary" data-bs-dismiss="offcanvas">Cancel</button>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

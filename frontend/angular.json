@@ -1,0 +1,162 @@
+{
+  "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "version": 1,
+  "newProjectRoot": "projects",
+  "projects": {
+    "frontend": {
+      "projectType": "application",
+      "schematics": {},
+      "root": "",
+      "sourceRoot": "src",
+      "prefix": "app",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-angular:application",
+          "options": {
+            "outputPath": "dist/frontend",
+            "index": "src/index.html",
+            "browser": "src/main.ts",
+            "polyfills": [
+              "zone.js"
+            ],
+            "tsConfig": "tsconfig.app.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css",
+              "src/assets/vendor/fonts/boxicons.css",
+              "src/assets/vendor/css/core.css",
+              "src/assets/vendor/css/theme-default.css",
+              "src/assets/css/demo.css",
+              "src/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css",
+              "src/assets/vendor/libs/apex-charts/apex-charts.css"
+            ],
+            "scripts": [
+              "src/assets/vendor/js/helpers.js",
+              "src/assets/js/config.js",
+              "src/assets/vendor/libs/jquery/jquery.js",
+              "src/assets/vendor/libs/popper/popper.js",
+              "src/assets/vendor/js/bootstrap.js",
+              "src/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js",
+              "src/assets/vendor/js/menu.js",
+              "src/assets/vendor/libs/apex-charts/apexcharts.js",
+              "src/assets/js/dashboards-analytics.js"
+            ]
+          },
+          "configurations": {
+            "production": {
+              "budgets": [
+                {
+                  "type": "initial",
+                  "maximumWarning": "500kb",
+                  "maximumError": "1mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "2kb",
+                  "maximumError": "4kb"
+                }
+              ],
+              "outputHashing": "all"
+            },
+            "development": {
+              "optimization": false,
+              "extractLicenses": false,
+              "sourceMap": true
+            }
+          },
+          "defaultConfiguration": "production"
+        },
+        "serve": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "configurations": {
+            "production": {
+              "buildTarget": "frontend:build:production"
+            },
+            "development": {
+              "buildTarget": "frontend:build:development"
+            }
+          },
+          "defaultConfiguration": "development"
+        },
+        "extract-i18n": {
+          "builder": "@angular-devkit/build-angular:extract-i18n",
+          "options": {
+            "buildTarget": "frontend:build"
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "polyfills": [
+              "zone.js",
+              "zone.js/testing"
+            ],
+            "tsConfig": "tsconfig.spec.json",
+            "assets": [
+              "src/favicon.ico",
+              "src/assets"
+            ],
+            "styles": [
+              "src/styles.css",
+              "src/assets/vendor/fonts/boxicons.css",
+              "src/assets/vendor/css/core.css",
+              "src/assets/vendor/css/theme-default.css",
+              "src/assets/css/demo.css",
+              "src/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css",
+              "src/assets/vendor/libs/apex-charts/apex-charts.css",
+              "src/assets/vendor/fonts/boxicons.css",
+              "src/assets/vendor/fonts/fontawesome.css",
+              "src/assets/vendor/css/rtl/core.css",
+              "src/assets/vendor/css/rtl/theme-default.css",
+              "src/assets/css/demo.css",
+              "src/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css",
+              "src/assets/vendor/libs/typeahead-js/typeahead.css",
+              "src/assets/vendor/libs/datatables-bs5/datatables.bootstrap5.css",
+              "src/assets/vendor/libs/datatables-responsive-bs5/responsive.bootstrap5.css",
+              "src/assets/vendor/libs/datatables-checkboxes-jquery/datatables.checkboxes.css",
+              "src/assets/vendor/libs/datatables-buttons-bs5/buttons.bootstrap5.css",
+              "src/assets/vendor/libs/flatpickr/flatpickr.css",
+              "src/assets/vendor/libs/datatables-rowgroup-bs5/rowgroup.bootstrap5.css",
+              "src/assets/vendor/libs/%40form-validation/form-validation.css",
+              "node_modules/bootstrap/dist/css/bootstrap.min.css"
+            ],
+            "scripts": [
+              "src/assets/vendor/js/helpers.js",
+              "src/assets/js/config.js",
+              "src/assets/vendor/libs/jquery/jquery.js",
+              "src/assets/vendor/libs/popper/popper.js",
+              "src/assets/vendor/js/bootstrap.js",
+              "src/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js",
+              "src/assets/vendor/js/menu.js",
+              "src/assets/vendor/libs/apex-charts/apexcharts.js",
+              "src/assets/js/dashboards-analytics.js",
+              "src/assets/vendor/js/helpers.js",
+              "src/assets/vendor/js/template-customizer.js",
+              "src/assets/js/config.js",
+              "src/assets/vendor/libs/jquery/jquery.js",
+              "src/assets/vendor/libs/popper/popper.js",
+              "src/assets/vendor/js/bootstrap.js",
+              "src/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js",
+              "src/assets/vendor/libs/hammer/hammer.js",
+              "src/assets/vendor/libs/i18n/i18n.js",
+              "src/assets/vendor/libs/typeahead-js/typeahead.js",
+              "src/assets/vendor/js/menu.js",
+              "src/assets/vendor/libs/datatables-bs5/datatables-bootstrap5.js",
+              "src/assets/vendor/libs/moment/moment.js",
+              "src/assets/vendor/libs/flatpickr/flatpickr.js",
+              "src/assets/vendor/libs/%40form-validation/popular.js",
+              "src/assets/vendor/libs/%40form-validation/bootstrap5.js",
+              "src/assets/vendor/libs/%40form-validation/auto-focus.js",
+              "src/assets/js/main.js",
+              "src/assets/js/tables-datatables-basic.js",
+              "node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"
+            ]
+          }
+        }
+      }
+    }
+  }
+}
